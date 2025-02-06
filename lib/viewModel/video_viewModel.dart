@@ -1,29 +1,32 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:dio/dio.dart';
-import '../models/videoModel.dart';
 
-final videoProvider = StateNotifierProvider<VideoViewModel, List<VideoModel>>((ref) {
-  return VideoViewModel();
+import '../models/videoModel.dart';
+import '../repository/video_repository.dart';
+
+final videoListProvider = FutureProvider<List<VideoModel>>((ref) async {
+  final repository = VideoRepository();
+  return repository.fetchVideos();
 });
 
-class VideoViewModel extends StateNotifier<List<VideoModel>> {
-  VideoViewModel() : super([]);
+final videoPlaybackProvider = StateNotifierProvider<VideoPlaybackNotifier, VideoPlaybackState>((ref) {
+  return VideoPlaybackNotifier();
+});
 
-  Future<void> fetchVideos() async {
-    try {
-      final videoIds = [
-        'eFDFooCflDdkcFcYxeKDSXeyW00FA00nXeOoMJeakvVSA',
-        'w9qAyPlIaEAaeSuoB36r22xutGF800mXxZ00skcDKsjFc',
-        'g5CwrZaaTWYdjb2peU818fzGkSvASW00tHnziQAQJq5I',
-      ];
+class VideoPlaybackState {
+  final bool isPlaying;
+  final int currentIndex;
 
-      final videos = videoIds.map((id) {
-        return VideoModel(id: id, url: 'https://stream.mux.com/$id.m3u8');
-      }).toList();
+  VideoPlaybackState({this.isPlaying = true, this.currentIndex = 0});
+}
 
-      state = videos;
-    } catch (e) {
-      print('Error fetching videos: $e');
-    }
+class VideoPlaybackNotifier extends StateNotifier<VideoPlaybackState> {
+  VideoPlaybackNotifier() : super(VideoPlaybackState());
+
+  void togglePlayPause() {
+    state = VideoPlaybackState(isPlaying: !state.isPlaying, currentIndex: state.currentIndex);
+  }
+
+  void setCurrentIndex(int index) {
+    state = VideoPlaybackState(isPlaying: state.isPlaying, currentIndex: index);
   }
 }

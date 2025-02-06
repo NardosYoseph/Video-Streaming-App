@@ -42,6 +42,7 @@ dependencies:
   json_serializable: ^6.9.0
   freezed: ^2.5.7
   video_player: ^2.9.2
+  connectivity_plus: ^6.1.2
 
 dev_dependencies:
   flutter_test:
