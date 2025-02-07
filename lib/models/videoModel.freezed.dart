@@ -14,17 +14,12 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
-VideoModel _$VideoModelFromJson(Map<String, dynamic> json) {
-  return _VideoModel.fromJson(json);
-}
-
 /// @nodoc
 mixin _$VideoModel {
-  String get id => throw _privateConstructorUsedError;
-  String get url => throw _privateConstructorUsedError;
-
-  /// Serializes this VideoModel to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  String get videoId => throw _privateConstructorUsedError;
+  VideoPlayerController? get videoController =>
+      throw _privateConstructorUsedError;
+  ChewieController? get chewieController => throw _privateConstructorUsedError;
 
   /// Create a copy of VideoModel
   /// with the given fields replaced by the non-null parameter values.
@@ -39,7 +34,10 @@ abstract class $VideoModelCopyWith<$Res> {
           VideoModel value, $Res Function(VideoModel) then) =
       _$VideoModelCopyWithImpl<$Res, VideoModel>;
   @useResult
-  $Res call({String id, String url});
+  $Res call(
+      {String videoId,
+      VideoPlayerController? videoController,
+      ChewieController? chewieController});
 }
 
 /// @nodoc
@@ -57,18 +55,23 @@ class _$VideoModelCopyWithImpl<$Res, $Val extends VideoModel>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
-    Object? url = null,
+    Object? videoId = null,
+    Object? videoController = freezed,
+    Object? chewieController = freezed,
   }) {
     return _then(_value.copyWith(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
+      videoId: null == videoId
+          ? _value.videoId
+          : videoId // ignore: cast_nullable_to_non_nullable
               as String,
-      url: null == url
-          ? _value.url
-          : url // ignore: cast_nullable_to_non_nullable
-              as String,
+      videoController: freezed == videoController
+          ? _value.videoController
+          : videoController // ignore: cast_nullable_to_non_nullable
+              as VideoPlayerController?,
+      chewieController: freezed == chewieController
+          ? _value.chewieController
+          : chewieController // ignore: cast_nullable_to_non_nullable
+              as ChewieController?,
     ) as $Val);
   }
 }
@@ -81,7 +84,10 @@ abstract class _$$VideoModelImplCopyWith<$Res>
       __$$VideoModelImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String id, String url});
+  $Res call(
+      {String videoId,
+      VideoPlayerController? videoController,
+      ChewieController? chewieController});
 }
 
 /// @nodoc
@@ -97,38 +103,43 @@ class __$$VideoModelImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
-    Object? url = null,
+    Object? videoId = null,
+    Object? videoController = freezed,
+    Object? chewieController = freezed,
   }) {
     return _then(_$VideoModelImpl(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
+      videoId: null == videoId
+          ? _value.videoId
+          : videoId // ignore: cast_nullable_to_non_nullable
               as String,
-      url: null == url
-          ? _value.url
-          : url // ignore: cast_nullable_to_non_nullable
-              as String,
+      videoController: freezed == videoController
+          ? _value.videoController
+          : videoController // ignore: cast_nullable_to_non_nullable
+              as VideoPlayerController?,
+      chewieController: freezed == chewieController
+          ? _value.chewieController
+          : chewieController // ignore: cast_nullable_to_non_nullable
+              as ChewieController?,
     ));
   }
 }
 
 /// @nodoc
-@JsonSerializable()
+
 class _$VideoModelImpl implements _VideoModel {
-  const _$VideoModelImpl({required this.id, required this.url});
-
-  factory _$VideoModelImpl.fromJson(Map<String, dynamic> json) =>
-      _$$VideoModelImplFromJson(json);
+  const _$VideoModelImpl(
+      {required this.videoId, this.videoController, this.chewieController});
 
   @override
-  final String id;
+  final String videoId;
   @override
-  final String url;
+  final VideoPlayerController? videoController;
+  @override
+  final ChewieController? chewieController;
 
   @override
   String toString() {
-    return 'VideoModel(id: $id, url: $url)';
+    return 'VideoModel(videoId: $videoId, videoController: $videoController, chewieController: $chewieController)';
   }
 
   @override
@@ -136,13 +147,16 @@ class _$VideoModelImpl implements _VideoModel {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$VideoModelImpl &&
-            (identical(other.id, id) || other.id == id) &&
-            (identical(other.url, url) || other.url == url));
+            (identical(other.videoId, videoId) || other.videoId == videoId) &&
+            (identical(other.videoController, videoController) ||
+                other.videoController == videoController) &&
+            (identical(other.chewieController, chewieController) ||
+                other.chewieController == chewieController));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, url);
+  int get hashCode =>
+      Object.hash(runtimeType, videoId, videoController, chewieController);
 
   /// Create a copy of VideoModel
   /// with the given fields replaced by the non-null parameter values.
@@ -151,26 +165,20 @@ class _$VideoModelImpl implements _VideoModel {
   @pragma('vm:prefer-inline')
   _$$VideoModelImplCopyWith<_$VideoModelImpl> get copyWith =>
       __$$VideoModelImplCopyWithImpl<_$VideoModelImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$VideoModelImplToJson(
-      this,
-    );
-  }
 }
 
 abstract class _VideoModel implements VideoModel {
   const factory _VideoModel(
-      {required final String id, required final String url}) = _$VideoModelImpl;
-
-  factory _VideoModel.fromJson(Map<String, dynamic> json) =
-      _$VideoModelImpl.fromJson;
+      {required final String videoId,
+      final VideoPlayerController? videoController,
+      final ChewieController? chewieController}) = _$VideoModelImpl;
 
   @override
-  String get id;
+  String get videoId;
   @override
-  String get url;
+  VideoPlayerController? get videoController;
+  @override
+  ChewieController? get chewieController;
 
   /// Create a copy of VideoModel
   /// with the given fields replaced by the non-null parameter values.

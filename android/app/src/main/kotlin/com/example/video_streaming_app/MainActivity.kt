@@ -5,17 +5,17 @@ import android.net.Uri
 import android.os.Bundle
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.plugin.common.MethodChannel
-import com.google.android.exoplayer2.upstream.cache.SimpleCache
+/*import com.google.android.exoplayer2.upstream.cache.SimpleCache
 import com.google.android.exoplayer2.upstream.cache.CacheDataSource
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
 import com.google.android.exoplayer2.upstream.cache.NoOpCacheEvictor
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.SimpleExoPlayer
-import com.google.android.exoplayer2.source.ProgressiveMediaSource
+import com.google.android.exoplayer2.source.ProgressiveMediaSource*/
 import java.io.File
 
 class MainActivity : FlutterActivity() {
-    private val CHANNEL = "com.example.video_swipe_app/video_cache"
+    /*private val CHANNEL = "com.example.video_swipe_app/video_cache"
     private lateinit var cache: SimpleCache
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,5 +57,5 @@ class MainActivity : FlutterActivity() {
         val exoPlayer = SimpleExoPlayer.Builder(this).build()
         exoPlayer.setMediaSource(mediaSource)
         exoPlayer.prepare()
-    }
+    }*/
 }
