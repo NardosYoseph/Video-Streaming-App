@@ -1,32 +1,35 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+// import 'package:video_player/video_player.dart';
 
-import '../models/videoModel.dart';
 import '../repository/video_repository.dart';
 
-final videoListProvider = FutureProvider<List<VideoModel>>((ref) async {
-  final repository = VideoRepository();
-  return repository.fetchVideos();
+final videoViewModelProvider = StateNotifierProvider<VideoViewModel, List<String>>((ref) {
+  return VideoViewModel();
 });
 
-final videoPlaybackProvider = StateNotifierProvider<VideoPlaybackNotifier, VideoPlaybackState>((ref) {
-  return VideoPlaybackNotifier();
-});
+class VideoViewModel extends StateNotifier<List<String>> {
+  VideoViewModel() : super([]);
 
-class VideoPlaybackState {
-  final bool isPlaying;
-  final int currentIndex;
+  final VideoRepository _repository = VideoRepository();
+  final DefaultCacheManager _cacheManager = DefaultCacheManager();
 
-  VideoPlaybackState({this.isPlaying = true, this.currentIndex = 0});
-}
+  Future<void> fetchVideos(List<String> videoIds) async {
+    final urls = await _repository.getVideoUrls(videoIds);
+    state = urls;
 
-class VideoPlaybackNotifier extends StateNotifier<VideoPlaybackState> {
-  VideoPlaybackNotifier() : super(VideoPlaybackState());
-
-  void togglePlayPause() {
-    state = VideoPlaybackState(isPlaying: !state.isPlaying, currentIndex: state.currentIndex);
+    // Cache the first video
+    if (urls.isNotEmpty) {
+      await cacheVideo(urls[0]);
+    }
   }
 
-  void setCurrentIndex(int index) {
-    state = VideoPlaybackState(isPlaying: state.isPlaying, currentIndex: index);
+  Future<void> cacheVideo(String videoUrl) async {
+    await _cacheManager.getSingleFile(videoUrl);
+  }
+
+  Future<String> getCachedVideoPath(String videoUrl) async {
+    final file = await _cacheManager.getSingleFile(videoUrl);
+    return file.path; // Returns the local file path
   }
 }
