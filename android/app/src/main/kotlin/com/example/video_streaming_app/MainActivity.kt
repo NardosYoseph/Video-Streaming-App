@@ -1,41 +1,56 @@
 package com.example.video_streaming_app
 
-import android.util.Log
 import android.net.Uri
-import android.os.Bundle
+import androidx.media3.common.MediaItem
+import androidx.media3.datasource.DefaultDataSource
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.hls.HlsMediaSource
+import androidx.media3.exoplayer.source.MediaSource
+import androidx.media3.ui.PlayerView
 import io.flutter.embedding.android.FlutterActivity
+import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
-/*import com.google.android.exoplayer2.upstream.cache.SimpleCache
-import com.google.android.exoplayer2.upstream.cache.CacheDataSource
-import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
-import com.google.android.exoplayer2.upstream.cache.NoOpCacheEvictor
-import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.SimpleExoPlayer
-import com.google.android.exoplayer2.source.ProgressiveMediaSource*/
 import java.io.File
 
 class MainActivity : FlutterActivity() {
-    /*private val CHANNEL = "com.example.video_swipe_app/video_cache"
-    private lateinit var cache: SimpleCache
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    private val CHANNEL = "com.example.app/video_cache"
+    private lateinit var videoCache: VideoCache
+    private lateinit var exoPlayer: ExoPlayer
+    private lateinit var playerView: PlayerView
 
-        // Initialize the cache
-        val cacheDir = File(cacheDir, "video_cache")
-        cache = SimpleCache(cacheDir, NoOpCacheEvictor())
-
-        // Set up MethodChannel
-        MethodChannel(flutterEngine!!.dartExecutor.binaryMessenger, CHANNEL).setMethodCallHandler { call, result ->
+    override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
+        super.configureFlutterEngine(flutterEngine)
+        videoCache = VideoCache(applicationContext)
+       initializeExoPlayer()
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL).setMethodCallHandler { call, result ->
             when (call.method) {
                 "cacheVideo" -> {
-                    val videoUrl = call.argument<String>("videoUrl")
-                    if (videoUrl != null) {
-                        cacheVideo(videoUrl)
-                        result.success(null)
+                    val url = call.argument<String>("url")
+                    val data = call.argument<ByteArray>("data")
+                    if (url != null && data != null) {
+                        val file = videoCache.cacheFile(url, data)
+                        result.success(file.absolutePath)
                     } else {
-                        result.error("INVALID_ARGUMENT", "Video URL is null", null)
+                        result.error("INVALID_ARGUMENTS", "URL or data is null", null)
                     }
+                }
+                "getCachedVideo" -> {
+                    val url = call.argument<String>("url")
+                    if (url != null) {
+                        val file = videoCache.getCachedFile(url)
+                        if (file != null) {
+                            result.success(file.absolutePath)
+                        } else {
+                            result.success(null)
+                        }
+                    } else {
+                        result.error("INVALID_ARGUMENTS", "URL is null", null)
+                    }
+                }
+                "clearCache" -> {
+                    videoCache.clearCache()
+                    result.success(null)
                 }
                 else -> {
                     result.notImplemented()
@@ -43,19 +58,37 @@ class MainActivity : FlutterActivity() {
             }
         }
     }
+    private fun initializeExoPlayer() {
+        // Create an ExoPlayer instance
+        exoPlayer = ExoPlayer.Builder(this).build()
 
-    private fun cacheVideo(videoUrl: String) {
-        val cacheDataSourceFactory = CacheDataSource.Factory()
-            .setCache(cache)
-            .setUpstreamDataSourceFactory(DefaultHttpDataSource.Factory())
-            .setFlags(CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR)
+        // Set up the PlayerView (UI for video playback)
+        playerView = PlayerView(this)
+        playerView.player = exoPlayer
+        setContentView(playerView)
+    }
 
-        // Use ExoPlayer to cache the video
-        val mediaSource = ProgressiveMediaSource.Factory(cacheDataSourceFactory)
-            .createMediaSource(MediaItem.fromUri(Uri.parse(videoUrl)))
+    private fun playVideo(url: String) {
+        // Create a MediaItem for the HLS stream
+        val mediaItem = MediaItem.fromUri(Uri.parse(url))
 
-        val exoPlayer = SimpleExoPlayer.Builder(this).build()
+        // Create a DataSource.Factory
+        val dataSourceFactory = DefaultDataSource.Factory(this)
+
+        // Create an HlsMediaSource.Factory
+        val hlsMediaSourceFactory = HlsMediaSource.Factory(dataSourceFactory)
+
+        // Create a MediaSource
+        val mediaSource: MediaSource = hlsMediaSourceFactory.createMediaSource(mediaItem)
+
+        // Prepare the ExoPlayer with the MediaSource
         exoPlayer.setMediaSource(mediaSource)
         exoPlayer.prepare()
-    }*/
+        exoPlayer.play()
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+        // Release the ExoPlayer instance when the activity is destroyed
+        exoPlayer.release()
+    }
 }

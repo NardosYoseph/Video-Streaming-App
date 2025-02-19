@@ -2,7 +2,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:video_streaming_app/views/video_screen.dart';
-import 'package:wakelock/wakelock.dart';
+// import 'package:wakelock/wakelock.dart';
 
 void main() {
   runApp(const ProviderScope(child: MyApp()));
@@ -16,17 +16,17 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  @override
-void initState() {
-  super.initState();
-  Wakelock.enable(); // Keeps the device screen on
-}
+//   @override
+// void initState() {
+//   super.initState();
+//   Wakelock.enable(); // Keeps the device screen on
+// }
 
-@override
-void dispose() {
-  Wakelock.disable(); // Disables wakelock when the widget is removed
-  super.dispose();
-}
+// @override
+// void dispose() {
+//   Wakelock.disable(); // Disables wakelock when the widget is removed
+//   super.dispose();
+// }
 
   @override
   Widget build(BuildContext context) {
@@ -43,205 +43,134 @@ void dispose() {
 }
 // import 'package:flutter/material.dart';
 // import 'package:video_player/video_player.dart';
-// import 'package:chewie/chewie.dart';
-
-// import 'models/connectivity_status.dart';
-// import 'widgets/bottomNavigationBar.dart';
 
 // void main() {
-//   runApp(MyApp());
+//  WidgetsFlutterBinding.ensureInitialized(); // Ensure the Flutter engine is initialized
+//  runApp(MyApp());
 // }
 
+// // Main App widget
 // class MyApp extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       debugShowCheckedModeBanner: false,
-//       home: VideoFeedScreen(),
-//     );
-//   }
+//  @override
+//  Widget build(BuildContext context) {
+//    return MaterialApp(
+//      home: VideoApp(),
+//    );
+//  }
 // }
 
-// class VideoFeedScreen extends StatefulWidget {
-//   @override
-//   _VideoFeedScreenState createState() => _VideoFeedScreenState();
+// // Stateful widget to manage video playback
+// class VideoApp extends StatefulWidget {
+//  @override
+//  _VideoAppState createState() => _VideoAppState();
 // }
 
-// class _VideoFeedScreenState extends State<VideoFeedScreen> {
-//   final PageController _pageController = PageController();
-//   final List<String> videoIds = [
-//     "eFDFooCflDdkcFcYxeKDSXeyW00FA00nXeOoMJeakvVSA",
-//     "w9qAyPlIaEAaeSuoB36r22xutGF800mXxZ00skcDKsjFc",
-//     "g5CwrZaaTWYdjb2peU818fzGkSvASW00tHnziQAQJq5I",
-//     "WrEk1kQpRcqAeTGCnrU00nJOUekJesdIL43NrYz01RYc",
-//     "zNvlO3QKLbe5Yu0101yQO8SRUDeycIL01cLOB02dhAvjhho",
-//     "TU4tu02tS7702jWUDVk5275JZvlNgv5WmyT6kLcV6awDw",
-//     "WVy89Zrbw15xAy8nFAGRljwAGGZq36BwNZSckOz1HU4"
-//   ];
+// class _VideoAppState extends State<VideoApp> {
+//  late VideoPlayerController _controller; // Late initialization of video controller
+//  late Future<void> _initializeVideoPlayerFuture; // Future for video initialization
+//  double _playbackSpeed = 1.0; // Variable to store the playback speed
 
-//   final List<VideoPlayerController?> _videoControllers = [];
-//   final List<ChewieController?> _chewieControllers = [];
-//   int _currentIndex = 0;
+//  @override
+//  void initState() {
+//    super.initState();
+//    // Initialize the video controller with a network video
+//    _controller = VideoPlayerController.networkUrl(
+//      Uri.parse('https://res.cloudinary.com/demo/video/upload/samples/dance-2.mp4'),
+//    );
 
-//   @override
-//   void initState() {
-//     super.initState();
-//     _initializeControllers();
-//     _monitorNetwork();
-//   }
-// void _monitorNetwork() {
-//     Connectivity().onConnectivityChanged.listen((List<ConnectivityResult> results) {
-//       if (results.contains(ConnectivityResult.none)) {
-//        OverlayEntry(
-//     builder: (context) => Positioned(
-//       top: MediaQuery.of(context).padding.top + 10, // Position below status bar
-//       left: 20,
-//       right: 20,
-//       child: Material(
-//         color: Colors.transparent,
-//         child: Container(
-//           padding: EdgeInsets.all(12),
-//           decoration: BoxDecoration(
-//             color: Colors.red,
-//             borderRadius: BorderRadius.circular(8),
-//             boxShadow: [
-//               BoxShadow(
-//                 color: Colors.black26,
-//                 blurRadius: 4,
-//                 offset: Offset(0, 2),
-//               ),
-//             ],
-//           ),
-//           child: Row(
-//             mainAxisAlignment: MainAxisAlignment.center,
-//             children: [
-//               Icon(Icons.wifi_off, color: Colors.white),
-//               SizedBox(width: 8),
-//               Text(
-//                 "No internet",
-//                 style: TextStyle(color: Colors.white),
-//               ),
-//             ],
-//           ),
-//         ),
-//       ),
-//     ),
-//   );
-//       } else {
-//         ConnectivityStatus.online;
-//       }
-//     });
-//   }
-//   void _initializeControllers() {
-// print("initializing current video***************************");
+//    // Store the initialization Future
+//    _initializeVideoPlayerFuture = _controller.initialize().then((_) {
+//      setState(() {}); // Update UI once the video is initialized
+//    });
+//  }
 
-//     for (int i = 0; i < videoIds.length; i++) {
-//       _videoControllers.add(null);
-//       _chewieControllers.add(null);
-//     }
-//     _loadVideo(0); // Load first video
-//     _preloadVideo(1); // Preload second video
-//   }
+//  @override
+//  Widget build(BuildContext context) {
+//    return Scaffold(
+//      appBar: AppBar(
+//        title: const Text('Video Player'),
+//      ),
+//      body: Column(
+//        children: [
+//          // Center the video player
+//          Center(
+//            child: FutureBuilder(
+//              future: _initializeVideoPlayerFuture,
+//              builder: (context, snapshot) {
+//                if (snapshot.connectionState == ConnectionState.done) {
+//                  return AspectRatio(
+//                    aspectRatio: _controller.value.aspectRatio, // Set aspect ratio
+//                    child: VideoPlayer(_controller), // Show the video player
+//                  );
+//                } else {
+//                  // Show loading indicator while the video is initializing
+//                  return const Center(child: CircularProgressIndicator());
+//                }
+//              },
+//            ),
+//          ),
+//          const SizedBox(height: 20), // Space between video and buttons
+//          Row(
+//            mainAxisAlignment: MainAxisAlignment.center,
+//            children: [
+//              // Play/Pause button
+//              ElevatedButton(
+//                onPressed: () {
+//                  setState(() {
+//                    if (_controller.value.isPlaying) {
+//                      _controller.pause(); // Pause the video if it's playing
+//                    } else {
+//                      _controller.play(); // Play the video if it's paused
+//                    }
+//                  });
+//                },
+//                // Update button text based on the playing state
+//                child: Text(_controller.value.isPlaying ? 'Pause' : 'Play'),
+//              ),
+//              const SizedBox(width: 10),
+//              ElevatedButton(
+//                onPressed: () {
+//                  setState(() {
+//                    _controller.seekTo(Duration.zero); // Stop the video (reset position)
+//                    _controller.pause(); // Pause after resetting to the beginning
+//                  });
+//                },
+//                child: const Text('Stop'),
+//              ),
+//            ],
+//          ),
+//          const SizedBox(height: 20), // Space between buttons and dropdown
 
-//   void _disposeController(int index) {
-//   if (index < 0 || index >= videoIds.length) return;
+//          // Dropdown to select the playback speed
+//          Row(
+//            mainAxisAlignment: MainAxisAlignment.center,
+//            children: [
+//              const Text('Playback Speed: '),
+//              DropdownButton<double>(
+//                value: _playbackSpeed,
+//                items: [
+//                  const DropdownMenuItem(value: 0.5, child: Text('0.5x')),
+//                  const DropdownMenuItem(value: 1.0, child: Text('1x')),
+//                  const DropdownMenuItem(value: 1.5, child: Text('1.5x')),
+//                  const DropdownMenuItem(value: 2.0, child: Text('2x')),
+//                ],
+//                onChanged: (value) {
+//                  setState(() {
+//                    _playbackSpeed = value!;
+//                    _controller.setPlaybackSpeed(_playbackSpeed); // Set the playback speed
+//                  });
+//                },
+//              ),
+//            ],
+//          ),
+//        ],
+//      ),
+//    );
+//  }
 
-//   _chewieControllers[index]?.pause();
-//   _chewieControllers[index]?.dispose();
-//   _chewieControllers[index] = null;
-
-//   _videoControllers[index]?.dispose();
-//   _videoControllers[index] = null;
-// }
-
-// void _loadVideo(int index) async {
-//   if (index < 0 || index >= videoIds.length) return;
-// print("loading current video $index*************************");
-//   if (_videoControllers[index] != null && 
-//       _chewieControllers[index] != null && 
-//       _videoControllers[index]!.value.isInitialized) {
-//     _chewieControllers[index]!.play();
-//     return;
-//   }
-
-//   final url = "https://stream.mux.com/${videoIds[index]}.m3u8";
-//   final controller = VideoPlayerController.network(url);
-
-//   await controller.initialize(); // Ensure it's initialized before proceeding
-
-//   if (!mounted) return; // Check if the widget is still mounted
-
-//   final chewieController = ChewieController(
-//     videoPlayerController: controller,
-//     autoPlay: true,
-//     looping: true,
-//   );
-
-//   setState(() {
-//     _videoControllers[index] = controller;
-//     _chewieControllers[index] = chewieController;
-//   });
-// }
-
-
-// void _preloadVideo(int index) {
-//   if (index < 0 || index >= videoIds.length) return;
-//   if (_videoControllers[index] != null) return;
-// print("preloading current video $index****************");
-
-//   final url = "https://stream.mux.com/${videoIds[index]}.m3u8";
-//   final controller = VideoPlayerController.network(url);
-
-//   controller.initialize().then((_) {
-//     setState(() {
-//       _videoControllers[index] = controller;
-//     });
-//   });
-// }
-
-// void _onPageChanged(int index) {
-//   if (index < 0 || index >= videoIds.length) return;
-
-//   _chewieControllers[_currentIndex]?.pause();
-//   setState(() {
-//     _currentIndex = index;
-//   });
-
-//   _loadVideo(index);
-//   _preloadVideo(index + 1);
-//   if (index > 0) _preloadVideo(index - 1);
-// }
-
-//   @override
-//   void dispose() {
-//     for (var controller in _videoControllers) {
-//       controller?.dispose();
-//     }
-//     for (var chewieController in _chewieControllers) {
-//       chewieController?.dispose();
-//     }
-//     _pageController.dispose();
-//     // _disposeController(_currentIndex);
-//     super.dispose();
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//        bottomNavigationBar: CustomBottomBar(),
-//       backgroundColor: Colors.black,
-//       body: PageView.builder(
-//         controller: _pageController,
-//         scrollDirection: Axis.vertical,
-//         itemCount: videoIds.length,
-//         onPageChanged: _onPageChanged,
-//         itemBuilder: (context, index) {
-//           if (_chewieControllers[index] == null) {
-//             return Center(child: CircularProgressIndicator());
-//           }
-//           return Chewie(controller: _chewieControllers[index]!);
-//         },
-//       ),
-//     );
-//   }
+//  @override
+//  void dispose() {
+//    _controller.dispose(); // Dispose of the controller to free resources
+//    super.dispose();
+//  }
 // }

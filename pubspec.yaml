@@ -47,7 +47,12 @@ dependencies:
   page_view_dot_indicator: ^2.3.0
   flutter_cache_manager: ^3.4.1
   flutter_vlc_player: ^7.4.2
-  wakelock: ^0.4.0
+  flick_video_player: ^0.9.0
+  video_player_media_kit: ^1.0.5
+  better_player: ^0.0.84
+  # flutter_ffmpeg: ^0.4.2
+  # fijkplayer: ^0.11.0
+  # wakelock: ^0.4.0
   # flutter_exoplayer: ^0.6.1
   # better_player: ^0.0.84
 
